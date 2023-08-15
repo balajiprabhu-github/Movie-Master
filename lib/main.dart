@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movies/ui/theme/dark_theme.dart';
+import 'package:movies/ui/theme/light_theme.dart';
 import 'ui/screens/splash_screen.dart';
 
 void main() {
@@ -11,8 +13,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SplashScreen(),
+    return MaterialApp(
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      home: const SplashScreen(),
     );
   }
 }
