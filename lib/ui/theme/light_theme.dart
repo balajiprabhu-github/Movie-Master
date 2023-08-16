@@ -9,4 +9,6 @@ ThemeData lightTheme = ThemeData(
     colorScheme: const ColorScheme.light(
       primary: Colors.red,
       secondary: Colors.redAccent,
+      surface: Colors.white,
+      onSurface: Colors.black
     ));

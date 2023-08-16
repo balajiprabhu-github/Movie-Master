@@ -9,4 +9,6 @@ ThemeData darkTheme = ThemeData(
     colorScheme: const ColorScheme.dark(
       primary: Colors.red,
       secondary: Colors.redAccent,
+      surface: Colors.black,
+      onSurface: Colors.white
     ));
