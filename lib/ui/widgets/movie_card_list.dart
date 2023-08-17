@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import '../../data/Constants.dart';
 
 class MovieCardList extends StatefulWidget {
   const MovieCardList({
@@ -67,11 +68,7 @@ class _MovieCardListState extends State<MovieCardList> {
               begin: FractionalOffset.bottomLeft,
               end: FractionalOffset.topRight,
               colors: [
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .surface
-                    .withOpacity(0.0),
+                Colors.transparent,
                 Theme
                     .of(context)
                     .colorScheme
@@ -93,7 +90,7 @@ class _MovieCardListState extends State<MovieCardList> {
         image: DecorationImage(
           fit: BoxFit.fill,
           image: NetworkImage(
-              "https://image.tmdb.org/t/p/original/$posterPath"),
+              "$imageUrl$posterPath"),
         ),
       ),
     );
@@ -122,16 +119,16 @@ class _MovieCardListState extends State<MovieCardList> {
     );
   }
 
-  double movieRatingPercentage(double voteAverage) {
+  double movieRatingPercentage(num voteAverage) {
     return voteAverage/10;
   }
 
-  String movieRatingPercentageLabel(double voteAverage) {
+  String movieRatingPercentageLabel(num voteAverage) {
     int percentageValue = (voteAverage * 10).toInt();
     return '$percentageValue%';
   }
 
-  Color movieRatingProgressColor(double voteAverage) {
+  Color movieRatingProgressColor(num voteAverage) {
     final sealedVoteAverage = voteAverage.toInt();
     if(sealedVoteAverage >= 7) {
       return Colors.green;

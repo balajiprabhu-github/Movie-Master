@@ -44,7 +44,7 @@ class Results {
   double? popularity;
   String? releaseDate;
   bool? video;
-  double? voteAverage;
+  num? voteAverage;
   int? voteCount;
 
   Results(

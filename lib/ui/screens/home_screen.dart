@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movies/ui/data/api_service.dart';
-import 'package:movies/ui/data/model/trending_movies.dart';
 import 'package:movies/ui/widgets/movie_card_list.dart';
+import '../../data/constants.dart';
+import '../../data/api_service.dart';
+import '../../data/model/trending_movies.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,13 +12,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<Results>> trendingMovies;
+
+  final List<Future<List<Results>>> moviesSectionList = [];
+  final List<String> moviesSectionTitleList = ['Trending Movies','Upcoming Movies','Playing Now','Popular Movies'];
 
   @override
   void initState() {
     super.initState();
-    trendingMovies = fetchTrendingMovies();
-
+    moviesSectionList.add(ApiService().fetchMoviesByUrl(trendingUrl));
+    moviesSectionList.add(ApiService().fetchMoviesByUrl(upComingUrl));
+    moviesSectionList.add(ApiService().fetchMoviesByUrl(playingNowUrl));
+    moviesSectionList.add(ApiService().fetchMoviesByUrl(popularUrl));
   }
 
   @override
@@ -31,35 +36,45 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Trending Movies',
-                style: TextStyle(
-                  fontSize: 20
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                child: FutureBuilder(
-                  future: trendingMovies,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(snapshot.error.toString()),
-                      );
-                    } else if (snapshot.hasData) {
-                      return  MovieCardList(snapshot: snapshot,);
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                ),
-              ),
-            ],
+            children: List.generate(moviesSectionList.length, (index) =>
+                movieSection(index)
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget movieSection(int itemIndex) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          moviesSectionTitleList[itemIndex],
+          style: const TextStyle(
+              fontSize: 20,
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          child: FutureBuilder(
+            future: moviesSectionList[itemIndex],
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              } else if (snapshot.hasData) {
+                return  MovieCardList(snapshot: snapshot,);
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ),
+
+        const SizedBox(height: 12),
+      ],
     );
   }
 }
