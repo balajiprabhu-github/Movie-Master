@@ -5,3 +5,5 @@ const String upComingUrl = 'https://api.themoviedb.org/3/movie/upcoming?language
 const String playingNowUrl = 'https://api.themoviedb.org/3/movie/now_playing?language=en-US';
 const String popularUrl = 'https://api.themoviedb.org/3/movie/popular?language=en-US';
 const String imageUrl = 'https://image.tmdb.org/t/p/original/';
+const String movieDetailsUrl = 'https://api.themoviedb.org/3/movie/movie_id?language=en-US';
+const String genreUrl = 'https://api.themoviedb.org/3/genre/movie/list?language=enS';

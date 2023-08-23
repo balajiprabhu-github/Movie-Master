@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:movies/ui/screens/movie_details_screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../../data/Constants.dart';
+import '../../data/constants.dart';
 
 class MovieCardList extends StatefulWidget {
   const MovieCardList({
@@ -34,26 +35,28 @@ class _MovieCardListState extends State<MovieCardList> {
   }
 
   Widget movieCard(BuildContext context, int itemIndex) {
-    return Container(
-      height: 200,
-      width: 140,
-      decoration: BoxDecoration(color: Theme
-          .of(context)
-          .colorScheme
-          .background),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(clipBehavior: Clip.none, children: <Widget>[
-            cardBackGround(widget.snapshot.data[itemIndex].posterPath),
-            cardGradient(context),
-            Positioned(
-                top: 5.0,
-                right: 2.0,
-                child: movieRating(context,itemIndex)
-            )
-          ]),
-        ],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MovieDetailsScreen(results:widget.snapshot.data[itemIndex])),
+        );
+      },
+      child: Container(
+        height: 200,
+        width: 140,
+        decoration: BoxDecoration(color: Theme
+            .of(context)
+            .colorScheme
+            .background),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(clipBehavior: Clip.none, children: <Widget>[
+              cardBackGround(widget.snapshot.data[itemIndex].posterPath),
+            ]),
+          ],
+        ),
       ),
     );
   }

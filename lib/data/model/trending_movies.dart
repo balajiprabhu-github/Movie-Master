@@ -41,11 +41,11 @@ class Results {
   String? posterPath;
   String? mediaType;
   List<int>? genreIds;
-  double? popularity;
+  num? popularity;
   String? releaseDate;
   bool? video;
   num? voteAverage;
-  int? voteCount;
+  num? voteCount;
 
   Results(
       {this.adult,

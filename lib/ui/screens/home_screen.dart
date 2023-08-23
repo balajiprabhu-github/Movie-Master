@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies/ui/widgets/movie_card_list.dart';
 import '../../data/constants.dart';
-import '../../data/api_service.dart';
+import '../../data/network/api_service.dart';
 import '../../data/model/trending_movies.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,8 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        title: const Text('Movie Master',style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold
+        ),),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -53,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
           moviesSectionTitleList[itemIndex],
           style: const TextStyle(
               fontSize: 20,
+            fontWeight: FontWeight.bold
           ),
         ),
         const SizedBox(height: 12),
@@ -67,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (snapshot.hasData) {
                 return  MovieCardList(snapshot: snapshot,);
               } else {
-                return const Center(child: CircularProgressIndicator());
+                return Container();
               }
             },
           ),
