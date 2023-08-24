@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movies/ui/screens/movie_details_screen.dart';
+import 'package:movies/features/movies_details/ui/movie_details_screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../../data/constants.dart';
+import '../../../data/constants.dart';
 
 class MovieCardList extends StatefulWidget {
   const MovieCardList({

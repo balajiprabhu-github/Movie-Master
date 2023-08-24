@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movies/ui/widgets/movie_card_list.dart';
-import '../../data/constants.dart';
-import '../../data/network/api_service.dart';
-import '../../data/model/trending_movies.dart';
+import 'package:movies/features/home/ui/movie_card_list.dart';
+import '../../../data/constants.dart';
+import '../../../data/network/api_service.dart';
+import '../../../data/model/trending_movies.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

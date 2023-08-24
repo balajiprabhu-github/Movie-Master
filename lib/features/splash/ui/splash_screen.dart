@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/features/splash/bloc/splash_bloc.dart';
-import 'package:movies/ui/screens/home_screen.dart';
+import 'package:movies/features/home/ui/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
