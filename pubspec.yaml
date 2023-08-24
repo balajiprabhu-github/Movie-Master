@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   percent_indicator: ^4.0.0
   http: ^1.1.0
+  bloc:
+  flutter_bloc:
+  meta:
 
 dev_dependencies:
   flutter_test:
