@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../../../data/Constants.dart';
-import '../../../data/model/credits.dart';
-import '../../../data/network/api_service.dart';
-import '../../../data/model/trending_movies.dart';
+import '../../../repository/Constants.dart';
+import '../../../repository/model/credits.dart';
+import '../../../repository/network/api_service.dart';
+import '../../../repository/model/trending_movies.dart';
 
 
 class MovieDetailsScreen extends StatefulWidget {

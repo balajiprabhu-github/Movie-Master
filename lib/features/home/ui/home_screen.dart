@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/features/home/bloc/home_bloc.dart';
 import 'package:movies/features/home/ui/movie_card_list.dart';
-import '../../../data/constants.dart';
-import '../../../data/network/api_service.dart';
-import '../../../data/model/trending_movies.dart';
+import '../data/movie_section_data.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,73 +13,62 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final List<Future<List<Results>>> moviesSectionList = [];
-  final List<String> moviesSectionTitleList = ['Trending Movies','Upcoming Movies','Playing Now','Popular Movies'];
+  final HomeBloc homeBloc = HomeBloc();
 
   @override
   void initState() {
+    homeBloc.add(HomeOnLoadEvent());
     super.initState();
-    moviesSectionList.add(ApiService().fetchMoviesByUrl(trendingUrl));
-    moviesSectionList.add(ApiService().fetchMoviesByUrl(upComingUrl));
-    moviesSectionList.add(ApiService().fetchMoviesByUrl(playingNowUrl));
-    moviesSectionList.add(ApiService().fetchMoviesByUrl(popularUrl));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .surface,
       appBar: AppBar(
-        title: const Text('Movie Master',style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold
+        centerTitle: true,
+        title: const Text('Movie Master', style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold
         ),),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: List.generate(moviesSectionList.length, (index) =>
-                movieSection(index)
-            ),
-          ),
-        ),
+      body: BlocConsumer<HomeBloc, HomeState>(
+        bloc: homeBloc,
+        listenWhen: (previous,current) => current is HomeActionState,
+        buildWhen: (previous,current) => current is !HomeActionState,
+        listener: (context, state) {
+
+        },
+        builder: (context, state) {
+          switch(state.runtimeType) {
+            case HomeInitial:
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case HomeOnLoadedSuccessState:
+              final successState = state as HomeOnLoadedSuccessState;
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(child: movieSection(successState.movieSectionList)),
+                  ),
+                );
+            default:
+              return const SizedBox();
+          }
+        },
       ),
     );
   }
 
-  Widget movieSection(int itemIndex) {
+  Widget movieSection(List<MovieSectionData> movieSectionList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          moviesSectionTitleList[itemIndex],
-          style: const TextStyle(
-              fontSize: 20,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          child: FutureBuilder(
-            future: moviesSectionList[itemIndex],
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(snapshot.error.toString()),
-                );
-              } else if (snapshot.hasData) {
-                return  MovieCardList(snapshot: snapshot,);
-              } else {
-                return Container();
-              }
-            },
-          ),
-        ),
-
-        const SizedBox(height: 12),
-      ],
+      children: List.generate(movieSectionList.length, (index) => MovieCardList(movieSection: movieSectionList[index],)),
     );
   }
 }

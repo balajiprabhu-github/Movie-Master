@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:movies/data/model/credits.dart';
+import 'package:movies/features/home/data/movie_section_data.dart';
 import '../constants.dart';
 import '../model/genres.dart';
 import '../model/trending_movies.dart';
@@ -13,6 +13,13 @@ final headers = {
 };
 
 class ApiService {
+
+  Map<String, String> movieCategories = {
+    'Trending Movies': trendingUrl,
+    'Upcoming Movies': upComingUrl,
+    'Playing Now': playingNowUrl,
+    'Popular Movies': popularUrl,
+  };
 
   Future<List<Results>> fetchMoviesByUrl(String url) async {
 
@@ -26,6 +33,30 @@ class ApiService {
     }
   }
 
+  Future<List<MovieSectionData>> fetchMovieSectionList() async {
+
+    final List<Future<List<Results>>> resultsFutures = [];
+
+    for (var value in movieCategories.values) {
+      resultsFutures.add(fetchMoviesByUrl(value));
+    }
+
+    final resultsLists = await Future.wait(resultsFutures);
+
+    final movieSections = <MovieSectionData>[];
+
+    int index = 0;
+    for (var category in movieCategories.keys) {
+      movieSections.add(MovieSectionData(
+        sectionTitle: category,
+        movieResultsList: resultsLists[index],
+      ));
+      index++;
+    }
+
+    return movieSections;
+  }
+
   Future<List<Genre>> fetchGenres() async {
 
     final response = await http.get(Uri.parse(genreUrl), headers: headers);
@@ -37,7 +68,6 @@ class ApiService {
       throw Exception('Something happened');
     }
   }
-
 
   Future<Map<String,dynamic>> fetchCredit(String movieId) async {
 

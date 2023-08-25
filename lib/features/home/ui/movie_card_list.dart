@@ -1,46 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:movies/features/movies_details/ui/movie_details_screen.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../../../data/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/features/home/bloc/home_bloc.dart';
+import 'package:movies/features/home/data/movie_section_data.dart';
+import '../../../repository/constants.dart';
+import '../../movies_details/ui/movie_details_screen.dart';
 
-class MovieCardList extends StatefulWidget {
-  const MovieCardList({
+class MovieCardList extends StatelessWidget {
+
+  MovieCardList({
     super.key,
-    required this.snapshot,
+    required this.movieSection,
   });
 
-  final AsyncSnapshot snapshot;
+  final MovieSectionData movieSection;
 
-  @override
-  State<MovieCardList> createState() => _MovieCardListState();
-}
+  final HomeBloc homeBloc = HomeBloc();
 
-class _MovieCardListState extends State<MovieCardList> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 200,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: widget.snapshot.data!.length,
-        itemBuilder: (context, itemIndex) {
-          return movieCard(context, itemIndex);
-        },
-        separatorBuilder: (context, int index) {
-          return const SizedBox(width: 10,);
-        },),
+
+    return BlocListener<HomeBloc, HomeState>(
+      bloc: homeBloc,
+      listener: (context, state) {
+       if(state is HomeOnMovieCardItemClickState) {
+         Navigator.push(
+           context,
+           MaterialPageRoute(builder: (context) => MovieDetailsScreen(results:movieSection.movieResultsList[state.itemIndex])),
+         );
+       }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            movieSection.sectionTitle.toString(),
+            style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),
+          ),
+
+          const SizedBox(
+            height: 20,
+          ),
+
+          SizedBox(
+            height: 200,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: movieSection.movieResultsList.length,
+              itemBuilder: (context, itemIndex) {
+                return movieCard(context, itemIndex);
+              },
+              separatorBuilder: (context, int index) {
+                return const SizedBox(width: 10,);
+              },),
+          ),
+
+          const SizedBox(
+            height: 20,
+          ),
+
+        ],
+      ),
     );
   }
 
   Widget movieCard(BuildContext context, int itemIndex) {
+    var result = movieSection.movieResultsList[itemIndex];
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MovieDetailsScreen(results:widget.snapshot.data[itemIndex])),
-        );
+        homeBloc.add(HomeOnMovieCardItemClickEvent(itemIndex: itemIndex));
       },
       child: Container(
         height: 200,
@@ -53,34 +85,11 @@ class _MovieCardListState extends State<MovieCardList> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Stack(clipBehavior: Clip.none, children: <Widget>[
-              cardBackGround(widget.snapshot.data[itemIndex].posterPath),
+              cardBackGround(result.posterPath.toString()),
             ]),
           ],
         ),
       ),
-    );
-  }
-
-  Widget cardGradient(BuildContext context) {
-    return Container(
-      height: 200,
-      width: 140,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          gradient: LinearGradient(
-              begin: FractionalOffset.bottomLeft,
-              end: FractionalOffset.topRight,
-              colors: [
-                Colors.transparent,
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .surface,
-              ],
-              stops: const [
-                0.0,
-                1.3
-              ])),
     );
   }
 
@@ -97,48 +106,5 @@ class _MovieCardListState extends State<MovieCardList> {
         ),
       ),
     );
-  }
-
-  Widget movieRating(BuildContext context,int index) {
-    return SizedBox(
-      width: 45,
-      child: CircularPercentIndicator(
-        radius: 20,
-        lineWidth: 6,
-        backgroundColor: Theme.of(context).colorScheme.onSurface,
-        progressColor: movieRatingProgressColor(widget.snapshot.data[index].voteAverage),
-        percent: movieRatingPercentage(widget.snapshot.data[index].voteAverage),
-        center: Text(
-          movieRatingPercentageLabel(widget.snapshot.data[index].voteAverage),
-          style: TextStyle(fontSize: 10, color: Theme
-              .of(context)
-              .colorScheme
-              .onSurface),
-        ),
-        circularStrokeCap: CircularStrokeCap.round,
-        animation: false,
-        animationDuration: 2000,
-      ),
-    );
-  }
-
-  double movieRatingPercentage(num voteAverage) {
-    return voteAverage/10;
-  }
-
-  String movieRatingPercentageLabel(num voteAverage) {
-    int percentageValue = (voteAverage * 10).toInt();
-    return '$percentageValue%';
-  }
-
-  Color movieRatingProgressColor(num voteAverage) {
-    final sealedVoteAverage = voteAverage.toInt();
-    if(sealedVoteAverage >= 7) {
-      return Colors.green;
-    } else if(sealedVoteAverage < 7 && sealedVoteAverage > 5) {
-      return Colors.yellow;
-    } else {
-      return Colors.red;
-    }
   }
 }
