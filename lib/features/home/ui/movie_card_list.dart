@@ -25,7 +25,7 @@ class MovieCardList extends StatelessWidget {
        if(state is HomeOnMovieCardItemClickState) {
          Navigator.push(
            context,
-           MaterialPageRoute(builder: (context) => MovieDetailsScreen(results:movieSection.movieResultsList[state.itemIndex])),
+           MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieDetailsData: state.movieDetailsData,)),
          );
        }
       },
@@ -72,7 +72,7 @@ class MovieCardList extends StatelessWidget {
     var result = movieSection.movieResultsList[itemIndex];
     return InkWell(
       onTap: () {
-        homeBloc.add(HomeOnMovieCardItemClickEvent(itemIndex: itemIndex));
+        homeBloc.add(HomeOnMovieCardItemClickEvent(results: result));
       },
       child: Container(
         height: 200,

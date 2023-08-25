@@ -15,6 +15,6 @@ class HomeOnLoadedSuccessState extends HomeState {
 class HomeOnErrorState extends HomeState {}
 
 class HomeOnMovieCardItemClickState extends HomeState {
-  int itemIndex;
-  HomeOnMovieCardItemClickState({required this.itemIndex});
+  MovieDetailsData movieDetailsData;
+  HomeOnMovieCardItemClickState({required this.movieDetailsData});
 }

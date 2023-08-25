@@ -10,6 +10,6 @@ class HomeOnLoadEvent extends HomeEvent {}
 class HomeOnErrorEvent extends HomeEvent {}
 
 class HomeOnMovieCardItemClickEvent extends HomeActionEvent {
-  int itemIndex;
-  HomeOnMovieCardItemClickEvent({required this.itemIndex});
+  Results results;
+  HomeOnMovieCardItemClickEvent({required this.results});
 }

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/features/movies_details/bloc/movie_details_bloc.dart';
+import 'package:movies/features/movies_details/data/movie_details_data.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../../../repository/Constants.dart';
-import '../../../repository/model/credits.dart';
-import '../../../repository/network/api_service.dart';
-import '../../../repository/model/trending_movies.dart';
-
 
 class MovieDetailsScreen extends StatefulWidget {
-
-  final Results results;
-
-  const MovieDetailsScreen({super.key, required this.results});
+  
+  final MovieDetailsData movieDetailsData;
+  const MovieDetailsScreen({super.key, required this.movieDetailsData});
 
   @override
   State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
@@ -18,109 +16,52 @@ class MovieDetailsScreen extends StatefulWidget {
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
-  Map<int, String> genresMap = {};
-  List<Crew> crewList = [];
-  List<Cast> castList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchGenres();
-    fetchCreditData();
-  }
-
-  fetchCreditData() async {
-    var responseBody = await ApiService().fetchCredit(widget.results.id.toString());
-    setState(() {
-      List<dynamic> castData = responseBody['cast'];
-      List<dynamic> crewData = responseBody['crew'];
-      castList = castData.map((json) => Cast.fromJson(json)).toList();
-      crewList = crewData.map((json) => Crew.fromJson(json)).toList();
-    });
-  }
-
-  fetchGenres() async {
-    var genreList = await ApiService().fetchGenres();
-    var genre = genreList.map((e) => e.toJson());
-    setState(() {
-      genresMap = getGenreNamesByIds(genre, widget.results.genreIds);
-    });
-  }
-
-  String? getTechnicianNameByJob(List<Crew> crewList,String job) {
-    final director = crewList.firstWhere(
-          (crew) => crew.job == job,
-      orElse: () => Crew(
-        adult: false,
-        gender: 0,
-        id: 0,
-        knownForDepartment: '',
-        name: '',
-        originalName: '',
-        popularity: 0.0,
-        profilePath: '',
-        creditId: '',
-        department: '',
-        job: '',
-      ),
-    );
-
-    return director.name ?? '';
-  }
-
-  Map<int, String> getGenreNamesByIds(
-      Iterable<Map<String, dynamic>> genresData, List<int>? genreIds) {
-    Map<int, String> genreNames = {};
-
-    if (genreIds == null) {
-      return genreNames; // Return an empty map if genreIds is null.
-    }
-
-    for (int genreId in genreIds) {
-      for (Map<String, dynamic> genre in genresData) {
-        if (genre['id'] == genreId) {
-          genreNames[genreId] = genre['name'];
-          break;
-        }
-      }
-    }
-
-    return genreNames;
-  }
-
+  final MovieDetailsBloc movieDetailsBloc = MovieDetailsBloc();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-            SizedBox(
-              height: MediaQuery.of(context).viewPadding.top,
+    return BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
+      bloc: movieDetailsBloc,
+      listener: (context,state) {
+        if(state is MovieDetailsOnBackPressState) {
+          Navigator.of(context).pop();
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).viewPadding.top,
+                ),
+                movieBackDrop(context),
+                const SizedBox(
+                  height: 20,
+                ),
+                movieTitle(),
+                movieReleaseYear(),
+                const SizedBox(
+                  height: 20,
+                ),
+                movieGenre(),
+                movieOverview(),
+                movieCrew(),
+                movieCast()
+              ],
             ),
-            movieBackDrop(context),
-            const SizedBox(height: 20,),
-            movieTitle(),
-            movieReleaseYear(),
-            const SizedBox(
-              height: 20,
-            ),
-            movieGenre(),
-            movieOverview(),
-            movieCrew(),
-            movieCast()
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   Widget movieTitle() {
+    var result = widget.movieDetailsData.results;
     return Align(
       alignment: Alignment.centerRight,
       child: SizedBox(
@@ -128,12 +69,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: Text(
-            widget.results.title.toString(),
+            result.title.toString(),
             textAlign: TextAlign.right,
-            style:const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold
-            ),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -141,42 +79,40 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget movieReleaseYear() {
+    var result = widget.movieDetailsData.results;
     return Align(
       alignment: Alignment.centerRight,
       child: SizedBox(
         width: 250,
         child: Text(
-          "(${widget.results.releaseDate.toString().substring(0,4)})",
+          "(${result.releaseDate.toString().substring(0, 4)})",
           textAlign: TextAlign.right,
-          style:const TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
-              fontStyle: FontStyle.italic
-          ),
+          style: const TextStyle(
+              fontSize: 20, color: Colors.grey, fontStyle: FontStyle.italic),
         ),
       ),
     );
   }
 
   Widget movieGenre() {
+    var genre = widget.movieDetailsData.genresMap;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Text('Genre',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-            ),),
+          const Text(
+            'Genre',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(
             height: 20,
           ),
           Text(
-            genresMap.values.join(" • "),
+            genre.values.join(" • "),
             textAlign: TextAlign.justify,
-            style:const TextStyle(
+            style: const TextStyle(
               fontSize: 16,
             ),
           ),
@@ -186,25 +122,25 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget movieOverview() {
+    var result = widget.movieDetailsData.results;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Text('Overview',
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-            ),),
+          const Text(
+            'Overview',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(
             height: 20,
           ),
           Text(
-            widget.results.overview.toString(),
+            result.overview.toString(),
             textAlign: TextAlign.justify,
-            style:const TextStyle(
-                fontSize: 16,
+            style: const TextStyle(
+              fontSize: 16,
             ),
           ),
         ],
@@ -222,8 +158,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           color: Colors.transparent,
           image: DecorationImage(
             fit: BoxFit.fill,
-            image: NetworkImage(
-                "$imageUrl$posterPath"),
+            image: NetworkImage("$imageUrl$posterPath"),
           ),
         ),
       ),
@@ -231,30 +166,36 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget movieBackDrop(BuildContext context) {
+    var result = widget.movieDetailsData.results;
+
     return Container(
       height: 300,
       width: double.infinity,
-      decoration: BoxDecoration(color: Theme
-          .of(context)
-          .colorScheme
-          .background),
+      decoration:
+          BoxDecoration(color: Theme.of(context).colorScheme.background),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Stack(clipBehavior: Clip.none, children: <Widget>[
-            cardBackGround(widget.results.backdropPath.toString()),
+            cardBackGround(result.backdropPath.toString()),
             cardGradient(context),
-
-            Positioned(top: 10.0,left: 10.0, child: GestureDetector(
-              onTap: (){Navigator.of(context).pop();},
-              child: backButton(context),
-            )),
-
-            Positioned(bottom: -80.0, left: 10.0,
-              child: moviePoster(widget.results.posterPath.toString()),
+            Positioned(
+                top: 10.0,
+                left: 10.0,
+                child: GestureDetector(
+                  onTap: () {
+                    movieDetailsBloc.add(MovieDetailsOnBackPressedEvent());
+                  },
+                  child: backButton(context),
+                )),
+            Positioned(
+              bottom: -80.0,
+              left: 10.0,
+              child: moviePoster(result.posterPath.toString()),
             ),
-
-            Positioned(bottom: 0.0, right: 0.0,
+            Positioned(
+              bottom: 0.0,
+              right: 0.0,
               child: movieRating(context),
             ),
           ]),
@@ -265,20 +206,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   Widget backButton(BuildContext context) {
     return Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.arrow_back,color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            );
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.arrow_back,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      ),
+    );
   }
-
 
   Widget cardGradient(BuildContext context) {
     return Container(
@@ -291,10 +232,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               end: FractionalOffset.bottomCenter,
               colors: [
                 Colors.transparent,
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .surface,
+                Theme.of(context).colorScheme.surface,
               ],
               stops: const [
                 0.0,
@@ -311,14 +249,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         color: Colors.transparent,
         image: DecorationImage(
           fit: BoxFit.fill,
-          image: NetworkImage(
-              "$imageUrl$posterPath"),
+          image: NetworkImage("$imageUrl$posterPath"),
         ),
       ),
     );
   }
 
   Widget movieRating(BuildContext context) {
+    var movieRatingData = widget.movieDetailsData.movieRatingData;
     return SizedBox(
       height: 150,
       width: 100,
@@ -330,20 +268,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             padding: EdgeInsets.all(8.0),
             child: Text(
               "User Score",
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold
-              ),),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
           ),
           backgroundColor: Theme.of(context).colorScheme.onSurface,
-          progressColor: movieRatingProgressColor(widget.results.voteAverage ?? 0.0),
-          percent: movieRatingPercentage(widget.results.voteAverage ?? 0.0),
+          progressColor: movieRatingData.progressColor,
+          percent: movieRatingData.percentage,
           center: Text(
-            movieRatingPercentageLabel(widget.results.voteAverage ?? 0.0),
-            style: TextStyle(fontSize: 20, color: Theme
-                .of(context)
-                .colorScheme
-                .onSurface),
+            movieRatingData.percentageLabel,
+            style: TextStyle(
+                fontSize: 20, color: Theme.of(context).colorScheme.onSurface),
           ),
           circularStrokeCap: CircularStrokeCap.round,
           animation: false,
@@ -354,22 +288,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget movieCrew() {
+    var directorName = widget.movieDetailsData.directorName;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Crew',
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-            ),),
-
+          const Text(
+            'Crew',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(
             height: 20,
           ),
-
-          crewInfo(getTechnicianNameByJob(crewList, 'Director').toString(), 'Director'),
+          crewInfo(directorName,'Director'),
         ],
       ),
     );
@@ -380,10 +312,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-            name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold
-          ),
+          name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         Text(job)
       ],
@@ -391,33 +321,32 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   Widget movieCast() {
+    var castList = widget.movieDetailsData.castList;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          const Text('Cast',
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-            ),),
-
+          const Text(
+            'Cast',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(
             height: 20,
           ),
-
           SizedBox(
             height: 150,
             child: Center(
               child: ListView.separated(
-                  itemBuilder: (snapshot,itemIndex) {
-                    return castInfo(context, itemIndex);
-                  },
-                  separatorBuilder: (context, int index) {
-                    return const SizedBox(width: 10,);
-                  },
-                  itemCount: castList.length,
+                itemBuilder: (snapshot, itemIndex) {
+                  return castInfo(itemIndex);
+                },
+                separatorBuilder: (context, int index) {
+                  return const SizedBox(
+                    width: 10,
+                  );
+                },
+                itemCount: castList.length,
                 scrollDirection: Axis.horizontal,
               ),
             ),
@@ -427,11 +356,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget castInfo(BuildContext context,int itemIndex) {
+  Widget castInfo(int itemIndex) {
+    var cast = widget.movieDetailsData.castList[itemIndex];
+    String? imagePath = cast.profilePath;
 
-    String? imagePath = castList[itemIndex].profilePath;
-
-    if(imagePath != null) {
+    if (imagePath != null) {
       return Column(
         children: [
           CircleAvatar(
@@ -439,15 +368,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             foregroundImage: NetworkImage('$imageUrl$imagePath'),
             backgroundColor: Colors.transparent,
           ),
-
           const SizedBox(
             height: 8,
           ),
-
           SizedBox(
             width: 100,
             child: Text(
-              castList[itemIndex].name.toString(),
+              cast.name.toString(),
               textAlign: TextAlign.center,
             ),
           )
@@ -456,30 +383,4 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     }
     return Container();
   }
-
-
-  Color movieRatingProgressColor(num voteAverage) {
-    final sealedVoteAverage = voteAverage.toInt();
-    if(sealedVoteAverage >= 7) {
-      return Colors.green;
-    } else if(sealedVoteAverage < 7 && sealedVoteAverage > 5) {
-      return Colors.yellow;
-    } else {
-      return Colors.red;
-    }
-  }
-
-  double movieRatingPercentage(num voteAverage) {
-    return voteAverage/10;
-  }
-
-  String movieRatingPercentageLabel(num voteAverage) {
-    int percentageValue = (voteAverage * 10).toInt();
-    return '$percentageValue%';
-  }
-
-
 }
-
-
-
