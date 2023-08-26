@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
+import 'di/get_it.dart';
 import 'features/splash/ui/splash_screen.dart';
 
 void main() {
+  setupLocator();
   runApp(const MyApp());
 }
 

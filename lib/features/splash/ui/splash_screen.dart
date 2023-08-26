@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/di/get_it.dart';
 import 'package:movies/features/splash/bloc/splash_bloc.dart';
 import 'package:movies/features/home/ui/home_screen.dart';
 
@@ -12,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
 
-  final SplashBloc splashBloc = SplashBloc();
+  final SplashBloc splashBloc = locator<SplashBloc>();
 
   late AnimationController _animationController;
   late Animation<double> _animation;

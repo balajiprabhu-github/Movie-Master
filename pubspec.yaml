@@ -40,6 +40,7 @@ dependencies:
   bloc:
   flutter_bloc:
   meta:
+  get_it:
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/features/home/bloc/home_bloc.dart';
 import 'package:movies/features/home/ui/movie_card_list.dart';
+import '../../../di/get_it.dart';
 import '../data/movie_section_data.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final HomeBloc homeBloc = HomeBloc();
+  final HomeBloc homeBloc = locator<HomeBloc>();
 
   @override
   void initState() {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/di/get_it.dart';
 import 'package:movies/features/movies_details/data/movie_details_data.dart';
 import 'package:movies/features/movies_details/data/movie_rating_data.dart';
 import 'package:movies/repository/network/api_service.dart';
@@ -15,6 +16,8 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
+  final ApiService apiService = locator<ApiService>();
+
   HomeBloc() : super(HomeInitial()) {
     on<HomeOnLoadEvent>(homeOnLoadEvent);
     on<HomeOnErrorEvent>(homeOnErrorEvent);
@@ -23,7 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> homeOnLoadEvent(HomeOnLoadEvent event, Emitter<HomeState> emit) async {
     emit(HomeInitial());
-    var movieSectionsList = await ApiService().fetchMovieSectionList();
+    var movieSectionsList = await apiService.fetchMovieSectionList();
     emit(HomeOnLoadedSuccessState(movieSectionList: movieSectionsList));
   }
 
@@ -34,10 +37,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   FutureOr<void> homeOnMovieCardItemClickEvent(HomeOnMovieCardItemClickEvent event, Emitter<HomeState> emit) async {
 
     var results  = event.results;
-    var genreList = await ApiService().fetchGenres();
+    var genreList = await apiService.fetchGenres();
     var genre = genreList.map((e) => e.toJson());
     var genreMap = getGenreNamesByIds(genre, results.genreIds);
-    var creditsResponse = await ApiService().fetchCredit(results.id.toString());
+    var creditsResponse = await apiService.fetchCredit(results.id.toString());
     List<dynamic> castData = creditsResponse['cast'];
     List<dynamic> crewData = creditsResponse['crew'];
     var castList = castData.map((json) => Cast.fromJson(json)).toList();

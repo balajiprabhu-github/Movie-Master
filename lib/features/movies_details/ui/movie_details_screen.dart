@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/features/movies_details/bloc/movie_details_bloc.dart';
 import 'package:movies/features/movies_details/data/movie_details_data.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import '../../../di/get_it.dart';
 import '../../../repository/Constants.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class MovieDetailsScreen extends StatefulWidget {
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
-  final MovieDetailsBloc movieDetailsBloc = MovieDetailsBloc();
+  final MovieDetailsBloc movieDetailsBloc = locator<MovieDetailsBloc>();
 
   @override
   Widget build(BuildContext context) {

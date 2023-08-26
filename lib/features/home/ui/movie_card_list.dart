@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/features/home/bloc/home_bloc.dart';
 import 'package:movies/features/home/data/movie_section_data.dart';
+import '../../../di/get_it.dart';
 import '../../../repository/constants.dart';
 import '../../movies_details/ui/movie_details_screen.dart';
 
@@ -14,7 +15,7 @@ class MovieCardList extends StatelessWidget {
 
   final MovieSectionData movieSection;
 
-  final HomeBloc homeBloc = HomeBloc();
+  final HomeBloc homeBloc = locator<HomeBloc>();
 
   @override
   Widget build(BuildContext context) {
