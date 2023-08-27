@@ -19,27 +19,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ApiService apiService = locator<ApiService>();
 
   HomeBloc() : super(HomeInitial()) {
-    on<HomeOnLoadEvent>(homeOnLoadEvent);
-    on<HomeOnErrorEvent>(homeOnErrorEvent);
-    on<HomeOnMovieCardItemClickEvent>(homeOnMovieCardItemClickEvent);
+    on<HomeOnLoadEvent>(_homeOnLoadEvent);
+    on<HomeOnErrorEvent>(_homeOnErrorEvent);
+    on<HomeOnMovieCardItemClickEvent>(_homeOnMovieCardItemClickEvent);
   }
 
-  FutureOr<void> homeOnLoadEvent(HomeOnLoadEvent event, Emitter<HomeState> emit) async {
+  FutureOr<void> _homeOnLoadEvent(HomeOnLoadEvent event, Emitter<HomeState> emit) async {
     emit(HomeInitial());
     var movieSectionsList = await apiService.fetchMovieSectionList();
     emit(HomeOnLoadedSuccessState(movieSectionList: movieSectionsList));
   }
 
-  FutureOr<void> homeOnErrorEvent(HomeOnErrorEvent event, Emitter<HomeState> emit) {
+  FutureOr<void> _homeOnErrorEvent(HomeOnErrorEvent event, Emitter<HomeState> emit) {
     emit(HomeOnErrorState());
   }
 
-  FutureOr<void> homeOnMovieCardItemClickEvent(HomeOnMovieCardItemClickEvent event, Emitter<HomeState> emit) async {
+  FutureOr<void> _homeOnMovieCardItemClickEvent(HomeOnMovieCardItemClickEvent event, Emitter<HomeState> emit) async {
 
     var results  = event.results;
     var genreList = await apiService.fetchGenres();
     var genre = genreList.map((e) => e.toJson());
-    var genreMap = getGenreNamesByIds(genre, results.genreIds);
+    var genreMap = _getGenreNamesByIds(genre, results.genreIds);
     var creditsResponse = await apiService.fetchCredit(results.id.toString());
     List<dynamic> castData = creditsResponse['cast'];
     List<dynamic> crewData = creditsResponse['crew'];
@@ -50,18 +50,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         movieDetailsData: MovieDetailsData(
             results: results,
             castList: castList,
-            directorName: getTechnicianNameByJob(crewList,'Director').toString(),
+            directorName: _getTechnicianNameByJob(crewList,'Director').toString(),
             movieRatingData: MovieRatingData(
-              progressColor: movieRatingProgressColor(voteAverage),
-              percentage: movieRatingPercentage(voteAverage),
-              percentageLabel: movieRatingPercentageLabel(voteAverage)
+              progressColor: _movieRatingProgressColor(voteAverage),
+              percentage: _movieRatingPercentage(voteAverage),
+              percentageLabel: _movieRatingPercentageLabel(voteAverage)
             ),
             genresMap: genreMap
         )
     ));
   }
 
-  Map<int, String> getGenreNamesByIds(
+  Map<int, String> _getGenreNamesByIds(
       Iterable<Map<String, dynamic>> genresData, List<int>? genreIds) {
     Map<int, String> genreNames = {};
 
@@ -81,13 +81,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     return genreNames;
   }
 
-  String? getTechnicianNameByJob(List<Crew> crewList, String job) {
+  String? _getTechnicianNameByJob(List<Crew> crewList, String job) {
     return crewList.firstWhere(
           (crew) => crew.job == job,
     ).name ?? '';
   }
 
-  Color movieRatingProgressColor(num voteAverage) {
+  Color _movieRatingProgressColor(num voteAverage) {
     final sealedVoteAverage = voteAverage.toInt();
     if (sealedVoteAverage >= 7) {
       return Colors.green;
@@ -98,14 +98,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  double movieRatingPercentage(num voteAverage) {
+  double _movieRatingPercentage(num voteAverage) {
     return voteAverage / 10;
   }
 
-  String movieRatingPercentageLabel(num voteAverage) {
+  String _movieRatingPercentageLabel(num voteAverage) {
     int percentageValue = (voteAverage * 10).toInt();
     return '$percentageValue%';
   }
-
-
 }

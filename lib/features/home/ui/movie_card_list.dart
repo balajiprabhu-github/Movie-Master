@@ -53,7 +53,7 @@ class MovieCardList extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: movieSection.movieResultsList.length,
               itemBuilder: (context, itemIndex) {
-                return movieCard(context, itemIndex);
+                return _movieCard(context, itemIndex);
               },
               separatorBuilder: (context, int index) {
                 return const SizedBox(width: 10,);
@@ -69,7 +69,7 @@ class MovieCardList extends StatelessWidget {
     );
   }
 
-  Widget movieCard(BuildContext context, int itemIndex) {
+  Widget _movieCard(BuildContext context, int itemIndex) {
     var result = movieSection.movieResultsList[itemIndex];
     return InkWell(
       onTap: () {
@@ -86,7 +86,7 @@ class MovieCardList extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Stack(clipBehavior: Clip.none, children: <Widget>[
-              cardBackGround(result.posterPath.toString()),
+              _cardBackGround(result.posterPath.toString()),
             ]),
           ],
         ),
@@ -94,7 +94,7 @@ class MovieCardList extends StatelessWidget {
     );
   }
 
-  Widget cardBackGround(String posterPath) {
+  Widget _cardBackGround(String posterPath) {
     return Container(
       height: 200,
       width: 140,

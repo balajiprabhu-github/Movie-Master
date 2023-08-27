@@ -22,10 +22,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
     splashBloc.add(SplashAnimationStartEvent());
-    initAnimations();
+    _initAnimations();
   }
 
-  initAnimations() {
+  _initAnimations() {
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),

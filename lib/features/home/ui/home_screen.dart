@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(child: movieSection(successState.movieSectionList)),
+                  child: SizedBox(child: _movieSection(successState.movieSectionList)),
                   ),
                 );
             default:
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget movieSection(List<MovieSectionData> movieSectionList) {
+  Widget _movieSection(List<MovieSectionData> movieSectionList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(movieSectionList.length, (index) => MovieCardList(movieSection: movieSectionList[index],)),

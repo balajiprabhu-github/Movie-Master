@@ -40,19 +40,19 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).viewPadding.top,
                 ),
-                movieBackDrop(context),
+                _movieBackDrop(context),
                 const SizedBox(
                   height: 20,
                 ),
-                movieTitle(),
-                movieReleaseYear(),
+                _movieTitle(),
+                _movieReleaseYear(),
                 const SizedBox(
                   height: 20,
                 ),
-                movieGenre(),
-                movieOverview(),
-                movieCrew(),
-                movieCast()
+                _movieGenre(),
+                _movieOverview(),
+                _movieCrew(),
+                _movieCast()
               ],
             ),
           ),
@@ -61,7 +61,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieTitle() {
+  Widget _movieTitle() {
     var result = widget.movieDetailsData.results;
     return Align(
       alignment: Alignment.centerRight,
@@ -79,7 +79,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieReleaseYear() {
+  Widget _movieReleaseYear() {
     var result = widget.movieDetailsData.results;
     return Align(
       alignment: Alignment.centerRight,
@@ -95,7 +95,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieGenre() {
+  Widget _movieGenre() {
     var genre = widget.movieDetailsData.genresMap;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -122,7 +122,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieOverview() {
+  Widget _movieOverview() {
     var result = widget.movieDetailsData.results;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -149,7 +149,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget moviePoster(String posterPath) {
+  Widget _moviePoster(String posterPath) {
     return Card(
       elevation: 8,
       child: Container(
@@ -166,7 +166,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieBackDrop(BuildContext context) {
+  Widget _movieBackDrop(BuildContext context) {
     var result = widget.movieDetailsData.results;
 
     return Container(
@@ -178,8 +178,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Stack(clipBehavior: Clip.none, children: <Widget>[
-            cardBackGround(result.backdropPath.toString()),
-            cardGradient(context),
+            _cardBackGround(result.backdropPath.toString()),
+            _cardGradient(context),
             Positioned(
                 top: 10.0,
                 left: 10.0,
@@ -187,17 +187,17 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   onTap: () {
                     movieDetailsBloc.add(MovieDetailsOnBackPressedEvent());
                   },
-                  child: backButton(context),
+                  child: _backButton(context),
                 )),
             Positioned(
               bottom: -80.0,
               left: 10.0,
-              child: moviePoster(result.posterPath.toString()),
+              child: _moviePoster(result.posterPath.toString()),
             ),
             Positioned(
               bottom: 0.0,
               right: 0.0,
-              child: movieRating(context),
+              child: _movieRating(context),
             ),
           ]),
         ],
@@ -205,7 +205,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget backButton(BuildContext context) {
+  Widget _backButton(BuildContext context) {
     return Container(
       width: 32,
       height: 32,
@@ -222,7 +222,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget cardGradient(BuildContext context) {
+  Widget _cardGradient(BuildContext context) {
     return Container(
       height: 300,
       width: double.infinity,
@@ -242,7 +242,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget cardBackGround(String posterPath) {
+  Widget _cardBackGround(String posterPath) {
     return Container(
       height: 300,
       width: double.infinity,
@@ -256,7 +256,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieRating(BuildContext context) {
+  Widget _movieRating(BuildContext context) {
     var movieRatingData = widget.movieDetailsData.movieRatingData;
     return SizedBox(
       height: 150,
@@ -288,7 +288,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieCrew() {
+  Widget _movieCrew() {
     var directorName = widget.movieDetailsData.directorName;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -302,13 +302,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           const SizedBox(
             height: 20,
           ),
-          crewInfo(directorName,'Director'),
+          _crewInfo(directorName,'Director'),
         ],
       ),
     );
   }
 
-  Widget crewInfo(String name, String job) {
+  Widget _crewInfo(String name, String job) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -321,7 +321,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget movieCast() {
+  Widget _movieCast() {
     var castList = widget.movieDetailsData.castList;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -340,7 +340,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             child: Center(
               child: ListView.separated(
                 itemBuilder: (snapshot, itemIndex) {
-                  return castInfo(itemIndex);
+                  return _castInfo(itemIndex);
                 },
                 separatorBuilder: (context, int index) {
                   return const SizedBox(
@@ -357,7 +357,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     );
   }
 
-  Widget castInfo(int itemIndex) {
+  Widget _castInfo(int itemIndex) {
     var cast = widget.movieDetailsData.castList[itemIndex];
     String? imagePath = cast.profilePath;
 

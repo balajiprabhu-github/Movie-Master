@@ -9,15 +9,15 @@ part 'movie_details_state.dart';
 class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
 
   MovieDetailsBloc() : super(MovieDetailsInitial()) {
-    on<MovieDetailsOnCrewLoadEvent>(movieDetailsOnCrewLoadEvent);
-    on<MovieDetailsOnBackPressedEvent>(movieDetailsOnBackPressEvent);
+    on<MovieDetailsOnCrewLoadEvent>(_movieDetailsOnCrewLoadEvent);
+    on<MovieDetailsOnBackPressedEvent>(_movieDetailsOnBackPressEvent);
   }
 
-  FutureOr<void> movieDetailsOnCrewLoadEvent(
+  FutureOr<void> _movieDetailsOnCrewLoadEvent(
       MovieDetailsOnCrewLoadEvent event, Emitter<MovieDetailsState> emit) {
   }
 
-  FutureOr<void> movieDetailsOnBackPressEvent(MovieDetailsOnBackPressedEvent event, Emitter<MovieDetailsState> emit) {
+  FutureOr<void> _movieDetailsOnBackPressEvent(MovieDetailsOnBackPressedEvent event, Emitter<MovieDetailsState> emit) {
     emit(MovieDetailsOnBackPressState());
   }
 }

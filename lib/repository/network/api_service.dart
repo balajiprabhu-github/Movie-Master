@@ -9,6 +9,7 @@ import '../model/trending_movies.dart';
 final headers = {
   'Authorization':
   'Bearer $bearerToken',
+  'connection': 'keep-alive',
   'Content-Type': 'application/json',
 };
 
