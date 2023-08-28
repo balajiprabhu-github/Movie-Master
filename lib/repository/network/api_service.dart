@@ -15,6 +15,10 @@ final headers = {
 
 class ApiService {
 
+  final http.Client httpClient;
+
+  ApiService(this.httpClient);
+
   Map<String, String> movieCategories = {
     'Trending Movies': trendingUrl,
     'Upcoming Movies': upComingUrl,
@@ -24,7 +28,7 @@ class ApiService {
 
   Future<List<Results>> fetchMoviesByUrl(String url) async {
 
-    final response = await http.get(Uri.parse(url), headers: headers);
+    final response = await httpClient.get(Uri.parse(url), headers: headers);
 
     if (response.statusCode == 200) {
       final decodedData = json.decode(response.body)['results'] as List;
@@ -60,7 +64,7 @@ class ApiService {
 
   Future<List<Genre>> fetchGenres() async {
 
-    final response = await http.get(Uri.parse(genreUrl), headers: headers);
+    final response = await httpClient.get(Uri.parse(genreUrl), headers: headers);
 
     if (response.statusCode == 200) {
       final decodedData = json.decode(response.body)['genres'] as List;
@@ -74,7 +78,7 @@ class ApiService {
 
     final url = Uri.parse('https://api.themoviedb.org/3/movie/$movieId/credits?language=en-US');
 
-    final response = await http.get(url,headers: headers);
+    final response = await httpClient.get(url,headers: headers);
 
     if (response.statusCode == 200) {
       return json.decode(response.body);

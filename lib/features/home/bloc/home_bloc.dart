@@ -30,7 +30,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeOnLoadedSuccessState(movieSectionList: movieSectionsList));
     } on Exception catch (_) {
       emit(HomeOnErrorState());
-      print(_);
     }
   }
 
