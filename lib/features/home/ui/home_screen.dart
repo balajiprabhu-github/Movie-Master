@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/features/home/bloc/home_bloc.dart';
 import 'package:movies/features/home/ui/movie_card_list.dart';
+import 'package:movies/repository/constants.dart';
 import '../../../di/get_it.dart';
 import '../data/movie_section_data.dart';
 
@@ -58,6 +59,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SizedBox(child: _movieSection(successState.movieSectionList)),
                   ),
                 );
+            case HomeOnErrorState:
+              return const Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: Image(
+                        image:  AssetImage("assets/error.png"),
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.center,
+                      ),
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: SizedBox(
+                        child: Text(
+                          errorNetworkMessage,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
             default:
               return const SizedBox();
           }

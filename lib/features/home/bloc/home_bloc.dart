@@ -20,18 +20,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc() : super(HomeInitial()) {
     on<HomeOnLoadEvent>(_homeOnLoadEvent);
-    on<HomeOnErrorEvent>(_homeOnErrorEvent);
     on<HomeOnMovieCardItemClickEvent>(_homeOnMovieCardItemClickEvent);
   }
 
   FutureOr<void> _homeOnLoadEvent(HomeOnLoadEvent event, Emitter<HomeState> emit) async {
     emit(HomeInitial());
-    var movieSectionsList = await apiService.fetchMovieSectionList();
-    emit(HomeOnLoadedSuccessState(movieSectionList: movieSectionsList));
-  }
-
-  FutureOr<void> _homeOnErrorEvent(HomeOnErrorEvent event, Emitter<HomeState> emit) {
-    emit(HomeOnErrorState());
+    try {
+      var movieSectionsList = await apiService.fetchMovieSectionList();
+      emit(HomeOnLoadedSuccessState(movieSectionList: movieSectionsList));
+    } on Exception catch (_) {
+      emit(HomeOnErrorState());
+      print(_);
+    }
   }
 
   FutureOr<void> _homeOnMovieCardItemClickEvent(HomeOnMovieCardItemClickEvent event, Emitter<HomeState> emit) async {

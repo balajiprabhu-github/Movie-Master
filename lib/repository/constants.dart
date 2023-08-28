@@ -7,3 +7,4 @@ const String popularUrl = 'https://api.themoviedb.org/3/movie/popular?language=e
 const String imageUrl = 'https://image.tmdb.org/t/p/original/';
 const String movieDetailsUrl = 'https://api.themoviedb.org/3/movie/movie_id?language=en-US';
 const String genreUrl = 'https://api.themoviedb.org/3/genre/movie/list?language=enS';
+const String errorNetworkMessage = 'Uh-oh! It seems like you are having trouble connecting to the internet. Please check your network connection and try again.';
