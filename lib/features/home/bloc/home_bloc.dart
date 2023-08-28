@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/di/get_it.dart';
 import 'package:movies/features/movies_details/data/movie_details_data.dart';

@@ -5,16 +5,28 @@ abstract class HomeState {}
 
 abstract class HomeActionState {}
 
-class HomeInitial extends HomeState {}
-
-class HomeOnLoadedSuccessState extends HomeState {
-  final List<MovieSectionData> movieSectionList;
-  HomeOnLoadedSuccessState({required this.movieSectionList});
+class HomeInitial extends HomeState with EquatableMixin {
+  @override
+  List<Object?> get props => [];
 }
 
-class HomeOnErrorState extends HomeState {}
+class HomeOnLoadedSuccessState extends HomeState with EquatableMixin {
+  final List<MovieSectionData> movieSectionList;
+  HomeOnLoadedSuccessState({required this.movieSectionList});
 
-class HomeOnMovieCardItemClickState extends HomeState {
+  @override
+  List<Object?> get props => [movieSectionList];
+}
+
+class HomeOnErrorState extends HomeState with EquatableMixin {
+  @override
+  List<Object?> get props => [];
+}
+
+class HomeOnMovieCardItemClickState extends HomeState with EquatableMixin {
   MovieDetailsData movieDetailsData;
   HomeOnMovieCardItemClickState({required this.movieDetailsData});
+
+  @override
+  List<Object?> get props => [];
 }

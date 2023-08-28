@@ -39,9 +39,11 @@ dependencies:
   http: ^1.1.0
   bloc:
   flutter_bloc:
+  equatable:
   meta:
   get_it:
   mockito:
+  bloc_test:
 
 dev_dependencies:
   flutter_test:
