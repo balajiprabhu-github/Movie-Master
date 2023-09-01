@@ -15,7 +15,7 @@ import '../data/movie_section_data.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
+class HomeBloc extends Bloc<HomeEvent, HomeState> with EquatableMixin {
 
   final ApiService apiService = locator<ApiService>();
 
@@ -46,6 +46,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     var castList = castData.map((json) => Cast.fromJson(json)).toList();
     var crewList = crewData.map((json) => Crew.fromJson(json)).toList();
     var voteAverage = event.results.voteAverage ?? 0;
+
     emit(HomeOnMovieCardItemClickState(
         movieDetailsData: MovieDetailsData(
             results: results,
@@ -106,4 +107,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     int percentageValue = (voteAverage * 10).toInt();
     return '$percentageValue%';
   }
+
+  @override
+  List<Object?> get props => [apiService];
 }
