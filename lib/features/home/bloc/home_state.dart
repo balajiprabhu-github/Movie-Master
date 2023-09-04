@@ -23,10 +23,10 @@ class HomeOnErrorState extends HomeState with EquatableMixin {
   List<Object?> get props => [];
 }
 
-class HomeOnMovieCardItemClickState extends HomeState with EquatableMixin {
+class HomeOnMovieCardItemClickState extends HomeActionState with EquatableMixin {
   MovieDetailsData movieDetailsData;
   HomeOnMovieCardItemClickState({required this.movieDetailsData});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [movieDetailsData];
 }
