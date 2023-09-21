@@ -1,16 +1,13 @@
 # movies
 
-movie app
+Movie app using Bloc and Bloc Test
 
-## Getting Started
+Screenshots
 
-This project is a starting point for a Flutter application.
+Dark Theme 
 
-A few resources to get you started if this is your first Flutter project:
+<img src="screenshots/Screenshot_1695293338.png" width="200"> <img src="screenshots/Screenshot_1695293357.png" width="200"> <img src="screenshots/Screenshot_1695293359.png" width="200">
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Light Theme
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="screenshots/Screenshot_1695293390.png" width="200"> <img src="screenshots/Screenshot_1695293437.png" width="200"> <img src="screenshots/Screenshot_1695293441.png" width="200">
